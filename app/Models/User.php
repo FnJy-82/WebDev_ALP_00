@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'identity_number',
+        'phone_number',
+        'is_banned'
     ];
 
     /**
@@ -45,4 +49,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function organizer_profiles() {
+        return $this->hasOne(Organizer_profile::class);
+    }
+
+    public function events()
+{
+    return $this->hasMany(Event::class);
+}
+
 }
