@@ -20,17 +20,23 @@ class OrganizerController extends Controller
             'company_name' => 'required|string',
             'bank_name' => 'required|string',
             'bank_number' => 'required|numeric',
-            // Tambahkan validasi file dokumen legalitas jika ada
+            'document'     => 'required|file|mimes:jpg,pdf|max:2048',
         ]);
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        $user->update([
-            'company_name' => $request->company_name,
-            'bank_name' => $request->bank_name,
-            'bank_number' => $request->bank_number,
-            'eo_status' => 'pending', // Ubah status jadi pending
+        $filePath = null;
+        if ($request->hasFile('document')) {
+            $filePath = $request->file('document')->store('documents', 'public');
+        }
+
+        $user->organizer_profile()->create([
+            'company_name'        => $request->company_name,
+            'bank_name'           => $request->bank_name,
+            'bank_account_number' => $request->bank_number,
+            'document_path'       => $filePath,
+            'verification_status' => 'pending',
         ]);
 
         return redirect()->route('dashboard')->with('status', 'Aplikasi EO Anda sedang ditinjau Admin.');

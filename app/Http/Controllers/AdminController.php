@@ -7,20 +7,31 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function pendingOrganizers() {
-    // Ambil user yang status EO-nya pending
-    $pendingUsers = User::where('eo_status', 'pending')->get();
-    return view('admin.verify-eo', compact('pendingUsers'));
-}
+    public function pendingOrganizers()
+    {
+        // Ambil user yang status EO-nya pending
+        $pendingUsers = User::whereHas('organizer_profile', function ($query) {
+            $query->where('verification_status', 'pending');
+        })->with('organizer_profile')->get();
+        return view('admin.verify-eo', compact('pendingUsers'));
+    }
 
-public function approveOrganizer($id) {
-    $user = User::findOrFail($id);
+    public function approveOrganizer($id)
+    {
+        // Cari User berdasarkan ID
+        $user = User::findOrFail($id);
 
-    $user->update([
-        'eo_status' => 'verified',
-        'role' => 'eo' // Otomatis ubah role jadi EO agar bisa akses fitur EO
-    ]);
+        // Update status di tabel relasinya
+        // Pastikan user punya profile sebelum update
+        if ($user->organizer_profile) {
+            $user->organizer_profile->update([
+                'verification_status' => 'verified'
+            ]);
 
-    return back()->with('success', 'User berhasil diverifikasi menjadi EO.');
-}
+            // Opsi: Ubah juga role di tabel user jadi 'eo' agar lebih mudah kedepannya
+            $user->update(['role' => 'eo']);
+        }
+
+        return back()->with('success', 'User berhasil diverifikasi.');
+    }
 }

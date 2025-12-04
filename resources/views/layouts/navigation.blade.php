@@ -16,7 +16,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @if (Auth::user()->role === 'customer' && Auth::user()->eo_status === 'none')
+                    @if (Auth::user()->role === 'customer' && !Auth::user()->organizer_profile)
                         <x-nav-link :href="route('organizer.create')" :active="request()->routeIs('organizer.create')">
                             {{ __('Daftar EO') }}
                         </x-nav-link>
@@ -91,7 +91,7 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            @if (Auth::user()->role === 'customer' && Auth::user()->eo_status === 'none')
+            @if (Auth::user()->role === 'customer' && !Auth::user()->organizer_profile)
                 <x-responsive-nav-link :href="route('organizer.create')" :active="request()->routeIs('organizer.create')">
                     {{ __('Daftar EO') }}
                 </x-responsive-nav-link>

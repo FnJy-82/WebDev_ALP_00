@@ -18,21 +18,11 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
-            // --- Tambahan Kolom Custom ---
-        $table->string('role')->default('customer'); // customer, admin, eo
 
-        // Data Customer (KYC Level 1)
-        // Kita buat nullable dulu agar fleksibel, tapi divalidasi saat register/update
-        $table->string('identity_number')->unique()->nullable();
-        $table->string('phone_number')->nullable();
-
-        // // Data Event Organizer (EO)
-        // $table->string('company_name')->nullable();
-        // $table->string('bank_name')->nullable();
-        // $table->string('bank_number')->nullable();
-        // $table->string('eo_status')->default('none'); // none, pending, verified
-        
-            $table->boolean('is_banned');
+            $table->string('role')->default('customer');
+            $table->string('identity_number')->unique()->nullable();
+            $table->string('phone_number')->nullable();
+            $table->boolean('is_banned')->default(false);
 
             $table->rememberToken();
             $table->timestamps();

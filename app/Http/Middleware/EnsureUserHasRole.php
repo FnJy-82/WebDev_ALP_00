@@ -15,13 +15,25 @@ class EnsureUserHasRole
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next, string $role): Response
-    {
-        // 1. Cek apakah user login
-        // 2. Cek apakah role user SAMA DENGAN role yang diminta di route
-        if (! Auth::check() || Auth::user()->role !== $role) {
-            abort(403, 'Akses ditolak. Anda bukan ' . ucfirst($role));
-        }
+{
+    $user = Auth::user();
 
+    if (! $user) {
+        abort(403);
+    }
+
+    // Jika mengecek role 'eo'
+    if ($role === 'eo') {
+        // Cek apakah punya profile DAN status verified
+        if ($user->organizer_profile && $user->organizer_profile->verification_status === 'verified') {
+            return $next($request);
+        }
+    }
+    // Logic role biasa (admin/customer)
+    elseif ($user->role === $role) {
         return $next($request);
     }
+
+    abort(403, 'Akses Ditolak.');
+}
 }

@@ -12,13 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('organizer_profiles', function (Blueprint $table) {
-            $table->id();
-            $table->string('company_name');
-            $table->string('bank_account_number');
-            $table->string('bank_name');
-            $table->enum('verification_status', ['pending', 'verified', 'rejected']);
-            $table->timestamps();
-        });
+        $table->id();
+        $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+        $table->string('company_name');
+        $table->string('bank_name');
+        $table->string('bank_account_number');
+        $table->string('document_path')->nullable(); 
+        $table->string('verification_status')->default('pending'); // pending, verified, rejected
+        $table->timestamps();
+    });
     }
 
     /**
