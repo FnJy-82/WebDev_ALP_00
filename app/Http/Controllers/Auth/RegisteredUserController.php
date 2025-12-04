@@ -34,7 +34,7 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
 
-            'identity_number' => ['required', 'string', 'size:16', 'unique:'.User::class], // NIK wajib 16 digit & unik
+            'identity_number' => ['required', 'string', 'size:16', 'unique:'.User::class],
             'phone_number' => ['required', 'string', 'max:15'],
         ]);
 
