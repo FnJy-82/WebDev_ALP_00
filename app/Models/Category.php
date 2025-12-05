@@ -10,7 +10,7 @@ class Category extends Model
         'name'
     ];
 
-    public function venues() {
+    public function events() {
         return $this->belongsToMany(Venue::class);
     }
 }

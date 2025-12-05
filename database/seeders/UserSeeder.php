@@ -23,5 +23,15 @@ class UserSeeder extends Seeder
             'phone_number' => '081234567890',
             'is_banned' => '0'
         ]);
+
+        User::factory()->create([
+            'name' => 'EO_1',
+            'email' => 'eo@veritix.com',
+            'password' => Hash::make('12345678'),
+            'role' => 'eo',
+            'identity_number' => '12312312',
+            'phone_number' => '081234567890',
+            'is_banned' => '0'
+        ]);
     }
 }

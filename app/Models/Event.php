@@ -13,15 +13,23 @@ class Event extends Model
         'end_time',
         'banner_image',
         'status',
-        'user_id'
+        'user_id',
+        'venue_id'
     ];
 
-    public function organizer_profiles() {
-        return $this->hasOne(Organizer_profile::class);
+    // Relasi ke User (Organizer)
+    public function organizer() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function organizer() {
-        return $this->belongsTo(User::class, 'user_id')
-                ->whereIn('role', ['event_organizer', 'admin']);
+    // Relasi ke Venue (1 Event punya 1 Venue)
+    public function venue() {
+        return $this->belongsTo(Venue::class);
+    }
+
+    // Relasi ke Category (1 Event bisa punya banyak Kategori)
+    // Contoh: Konser Amal (Masuk kategori 'Musik' dan 'Sosial')
+    public function categories() {
+        return $this->belongsToMany(Category::class);
     }
 }
