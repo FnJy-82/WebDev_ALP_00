@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Transaction extends Model
+class Ticket extends Model
 {
     protected $fillable = [
-        'user_id', 'event_id', 'transaction_date', 'total_amount', 'status', 'snap_token'
+        'user_id', 'event_id', 'transaction_date', 'seat_number', 
+        'face_photo_path', 'status', 'qr_code_hash', 'transaction_id'
     ];
 
     public function user() {
@@ -16,9 +17,5 @@ class Transaction extends Model
 
     public function event() {
         return $this->belongsTo(Event::class);
-    }
-
-    public function ticket() {
-        return $this->hasOne(Ticket::class);
     }
 }

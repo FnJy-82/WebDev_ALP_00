@@ -9,7 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+   public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
@@ -17,8 +17,19 @@ return new class extends Migration
             // Relasi ke User (Organizer)
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
-            // Relasi ke Venue (Lokasi) - Jika venue dihapus, event jangan dihapus (set null)
+            // Relasi ke Venue (Lokasi)
             $table->foreignId('venue_id')->nullable()->constrained()->onDelete('set null');
+
+            // === [YANG TADI HILANG SAYA TAMBAHKAN DISINI] ===
+            // 1. Kategori (Bisa null biar aman)
+            $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null');
+            
+            // 2. Harga (Decimal biar presisi duit)
+            $table->decimal('price', 15, 2)->default(0);
+            
+            // 3. Kuota Tiket
+            $table->integer('quota')->default(0);
+            // ================================================
 
             $table->string('title');
             $table->text('description');
@@ -32,7 +43,6 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */

@@ -2,35 +2,31 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory; // 1. Wajib ada
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable; // 2. Wajib dipanggil di sini
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-        'identity_number',
-        'phone_number',
+        'name', 
+        'email', 
+        'password', 
+        'role', 
+        'identity_number', 
+        'phone_number', 
+        'face_photo', 
+        'balance', 
         'is_banned'
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -50,7 +46,25 @@ class User extends Authenticatable
         ];
     }
 
+    // --- RELATIONS ---
+
+    // Relasi ke Profile Organizer
     public function organizer_profile() {
         return $this->hasOne(Organizer_profile::class);
+    }
+
+    // Relasi ke API Key
+    public function apiKey() {
+        return $this->hasOne(OrganizerApiKey::class);
+    }
+
+    // Relasi ke Tiket yang dimiliki
+    public function tickets() {
+        return $this->hasMany(Ticket::class);
+    }
+    
+    // Relasi ke Riwayat Saldo
+    public function wallet_mutations() {
+        return $this->hasMany(Wallet::class);
     }
 }

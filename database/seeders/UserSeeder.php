@@ -2,36 +2,42 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Admin Veritix',
-            'email' => 'admin@veritix.com',
-            'password' => Hash::make('12345678'),
+        // 1. AKUN ADMIN (Untuk Login Admin)
+        User::create([
+            'name' => 'Super Admin',
+            'email' => 'admin@ticketpro.com',
+            'password' => Hash::make('password'),
             'role' => 'admin',
-            'identity_number' => '12341234',
-            'phone_number' => '081234567890',
-            'is_banned' => '0'
+            'email_verified_at' => now(),
         ]);
 
-        User::factory()->create([
-            'name' => 'EO_1',
-            'email' => 'eo@veritix.com',
-            'password' => Hash::make('12345678'),
-            'role' => 'eo',
-            'identity_number' => '12312312',
-            'phone_number' => '081234567890',
-            'is_banned' => '0'
+        // 2. AKUN ORGANIZER (PENTING: Untuk Pemilik Event di EventSeeder)
+        User::create([
+            'name' => 'Event Organizer Utama',
+            'email' => 'eo@ticketpro.com',
+            'password' => Hash::make('password'),
+            'role' => 'organizer',
+            'email_verified_at' => now(),
         ]);
+
+        // 3. AKUN CUSTOMER (Untuk Demo Beli Tiket)
+        User::create([
+            'name' => 'Budi Customer',
+            'email' => 'customer@ticketpro.com',
+            'password' => Hash::make('password'),
+            'role' => 'customer',
+            'email_verified_at' => now(),
+        ]);
+        
+        // 4. Dummy Tambahan (Opsional)
+        User::factory(5)->create(['role' => 'customer']);
     }
 }

@@ -42,9 +42,9 @@
                         </div>
 
                         <div class="flex items-center justify-end mt-6">
-                            <x-primary-button>
+                            <button>
                                 {{ __('Ajukan Verifikasi EO') }}
-                            </x-primary-button>
+                            </button>
                         </div>
                     </form>
 

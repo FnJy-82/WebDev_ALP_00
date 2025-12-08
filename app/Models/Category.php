@@ -3,14 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
-    protected $fillable = [
-        'name'
-    ];
+    use HasFactory;
+    
+    protected $fillable = ['name'];
 
+    // Relasi balik ke Event
     public function events() {
-        return $this->belongsToMany(Venue::class);
+        return $this->belongsToMany(Event::class);
     }
 }

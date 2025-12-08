@@ -1,145 +1,130 @@
-<x-app-layout>
-    {{-- 1. HERO SECTION (Banner Atas) --}}
-    <div class="bg-indigo-600 text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl font-bold mb-4">Temukan Event Seru di Sekitarmu!</h1>
-            <p class="text-lg text-indigo-100">Bergabunglah dengan ribuan orang lainnya dalam event terbaik tahun ini.</p>
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ config('app.name', 'TicketPro') }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased">
+
+    {{-- 1. NAVBAR TRANSPARAN (PENGHUBUNG KE DASHBOARD) --}}
+    <nav class="absolute top-0 w-full z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center">
+                    <h1 class="text-2xl font-extrabold text-white tracking-wider">
+                        Ticket<span class="text-cyan-400">Pro</span>.
+                    </h1>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-4">
+                    @if (Route::has('login'))
+                        @auth
+                            <span class="text-slate-300 text-sm mr-2">Halo, {{ Auth::user()->name }}</span>
+                            <a href="{{ url('/dashboard') }}" class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition shadow-lg hover:shadow-cyan-500/50">
+                                MASUK DASHBOARD →
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}" class="text-white hover:text-cyan-400 font-medium transition px-4">Masuk</a>
+
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="px-5 py-2.5 bg-white text-slate-900 hover:bg-slate-100 font-bold rounded-lg transition">
+                                    Daftar Sekarang
+                                </a>
+                            @endif
+                        @endauth
+                    @endif
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {{-- 2. HERO SECTION (BANNER UTAMA) --}}
+    <div class="relative bg-slate-900 pt-32 pb-40 overflow-hidden">
+        <div class="absolute inset-0">
+            <img class="w-full h-full object-cover opacity-20" src="https://images.unsplash.com/photo-1459749411177-260f11c7c8e6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80">
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-900/80 to-slate-900"></div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <span class="inline-block py-1 px-3 rounded-full bg-cyan-900/50 border border-cyan-500/30 text-cyan-300 text-xs font-bold tracking-wider mb-6 uppercase backdrop-blur-md">
+                #1 Secure Ticketing Platform
+            </span>
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 leading-tight">
+                Experience <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Real Magic.</span>
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                Platform tiket event paling aman dengan teknologi Face-Lock Verification.
+                <br>Selamat tinggal calo, selamat datang pengalaman eksklusif.
+            </p>
+            
+            <div class="flex justify-center gap-4">
+                <a href="#event-list" class="px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold rounded-xl shadow-lg hover:shadow-cyan-500/40 transform hover:-translate-y-1 transition duration-300">
+                    Cari Tiket Event
+                </a>
+            </div>
         </div>
     </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+    {{-- 3. LIST EVENT (Scroll Target) --}}
+    <div id="event-list" class="bg-slate-50 py-20 min-h-screen -mt-20 relative z-20 rounded-t-[3rem]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-extrabold text-slate-900">Upcoming Events 🔥</h2>
+                <p class="text-slate-500 mt-2">Dapatkan tiketmu sebelum kehabisan.</p>
+            </div>
 
-            {{-- Alert Success --}}
-            @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('success') }}</span>
+            @if(isset($events) && count($events) > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($events as $event)
+                    <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden border border-slate-100">
+                        
+                        <div class="h-56 overflow-hidden relative">
+                            <img src="{{ $event->banner_image ?? 'https://via.placeholder.com/600x400?text=Event' }}" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide">
+                                {{ $event->category ?? 'General' }}
+                            </div>
+                        </div>
+
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <p class="text-xs font-bold text-cyan-600 uppercase mb-1">
+                                        {{ \Carbon\Carbon::parse($event->start_time)->format('d M Y') }}
+                                    </p>
+                                    <h3 class="text-xl font-bold text-slate-800 leading-tight group-hover:text-cyan-700 transition">
+                                        {{ $event->title }}
+                                    </h3>
+                                </div>
+                            </div>
+                            
+                            <p class="text-slate-500 text-sm line-clamp-2 mb-6">
+                                {{ $event->description }}
+                            </p>
+
+                            <a href="{{ route('checkout.create', $event->id ?? 1) }}" class="block w-full py-3 bg-slate-900 text-white text-center font-bold rounded-xl hover:bg-blue-600 transition shadow-lg">
+                                Beli Tiket
+                            </a>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="flex flex-col items-center justify-center py-12 border-2 border-dashed border-slate-200 rounded-3xl">
+                    <svg class="w-16 h-16 text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    <p class="text-slate-500 font-medium">Belum ada event yang tersedia saat ini.</p>
                 </div>
             @endif
 
-            {{-- 2. DASHBOARD AREA (HANYA MUNCUL JIKA SUDAH LOGIN) --}}
-            @auth
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold">Halo, {{ Auth::user()->name }}! 👋</h3>
-                            <span class="px-3 py-1 text-xs font-semibold rounded-full {{ Auth::user()->role === 'admin' ? 'bg-red-100 text-red-800' : (Auth::user()->role === 'eo' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800') }}">
-                                {{ ucfirst(Auth::user()->role) }}
-                            </span>
-                        </div>
-
-                        {{-- Logika Tombol EO --}}
-                        @if(Auth::user()->role === 'customer')
-                            @if(!Auth::user()->organizer_profile)
-                                <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-                                    <div>
-                                        <p class="font-bold text-indigo-700">Ingin membuat Event sendiri?</p>
-                                        <p class="text-sm text-indigo-600">Daftarkan diri Anda sebagai Event Organizer sekarang dan mulai jual tiket.</p>
-                                    </div>
-                                    <a href="{{ route('organizer.create') }}" class="whitespace-nowrap bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 transition shadow-sm">
-                                        Daftar Jadi EO
-                                    </a>
-                                </div>
-                            @elseif(Auth::user()->organizer_profile->verification_status === 'pending')
-                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                                    <div class="flex">
-                                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                        </svg>
-                                        <div class="ml-3">
-                                            <p class="text-sm text-yellow-700">
-                                                <span class="font-bold">Aplikasi EO Sedang Ditinjau.</span> Mohon tunggu 1x24 jam.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                        @endif
-
-                        {{-- TOMBOL CREATE EVENT (HANYA MUNCUL JIKA EO VERIFIED ATAU ADMIN) --}}
-                        @if(Auth::user()->role === 'admin' || Auth::user()->role === 'eo')
-                            <div class="bg-green-50 border-l-4 border-green-400 p-4 flex justify-between items-center mt-4">
-                                <div>
-                                    <p class="font-bold text-green-700">Kelola Event Anda</p>
-                                    <p class="text-sm text-green-600">Anda dapat membuat dan mengatur event.</p>
-                                </div>
-                                <a href="{{ route('events.create') }}" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
-                                    + Buat Event Baru
-                                </a>
-                            </div>
-                        @endif
-
-                    </div>
-                </div>
-            @endauth
-
-            {{-- 3. LIST EVENT --}}
-            <div>
-                <div class="flex justify-between items-end mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">Event Terbaru</h2>
-                </div>
-
-                @if(count($events) > 0)
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @foreach($events as $event)
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition duration-300 flex flex-col">
-                            <!-- Gambar Event -->
-                            <div class="h-48 bg-gray-200 relative">
-                                <img src="{{ $event->banner_image }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
-                                @if(Auth::check() && Auth::id() === $event->user_id)
-                                    <div class="absolute top-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                                        Milik Anda
-                                    </div>
-                                @endif
-                            </div>
-
-                            <div class="p-5 flex-grow">
-                                <div class="flex items-center text-xs text-indigo-600 font-semibold mb-2 uppercase tracking-wide">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                    {{ $event->venue->name ?? 'Online / TBA' }}
-                                </div>
-
-                                <h3 class="text-xl font-bold text-gray-900 mb-2 leading-tight hover:text-indigo-600 transition">
-                                    {{ $event->title }}
-                                </h3>
-
-                                <div class="flex items-center text-gray-500 text-sm mb-4">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    {{ \Carbon\Carbon::parse($event->start_time)->translatedFormat('d F Y, H:i') }} WIB
-                                </div>
-                            </div>
-
-                            <div class="border-t border-gray-100 p-4 bg-gray-50 mt-auto">
-                                @if(Auth::check() && (Auth::id() === $event->user_id || Auth::user()->role === 'admin'))
-                                    {{-- TOMBOL EDIT & DELETE (HANYA PEMILIK) --}}
-                                    <div class="flex gap-2">
-                                        <a href="{{ route('events.edit', $event->id) }}" class="flex-1 text-center bg-yellow-500 text-white py-2 rounded-lg font-semibold text-sm hover:bg-yellow-600 transition">
-                                            Edit
-                                        </a>
-                                        <form action="{{ route('events.destroy', $event->id) }}" method="POST" class="flex-1" onsubmit="return confirm('Yakin ingin menghapus event ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="w-full bg-red-500 text-white py-2 rounded-lg font-semibold text-sm hover:bg-red-600 transition">
-                                                Hapus
-                                            </button>
-                                        </form>
-                                    </div>
-                                @else
-                                    <button class="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold text-sm hover:bg-indigo-700 transition">
-                                        Lihat Detail
-                                    </button>
-                                @endif
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                @else
-                    <div class="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                        <p class="text-gray-500">Belum ada event yang tersedia saat ini.</p>
-                    </div>
-                @endif
-            </div>
-
         </div>
     </div>
-</x-app-layout>
+
+    <footer class="bg-white border-t border-slate-200 py-10 mt-10">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-400 text-sm">© 2025 TicketPro. All rights reserved.</p>
+        </div>
+    </footer>

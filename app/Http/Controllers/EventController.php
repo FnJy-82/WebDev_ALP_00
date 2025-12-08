@@ -128,4 +128,14 @@ class EventController extends Controller
         $event->delete();
         return redirect()->route('home')->with('success', 'Event berhasil dihapus.');
     }
+    public function index()
+    {
+        // Ambil event HANYA milik user yang sedang login
+        $events = Event::where('user_id', Auth::id())
+                    ->with(['venue', 'category']) // Eager load biar ringan
+                    ->latest()
+                    ->get();
+                    
+        return view('events.index', compact('events'));
+    }
 }
