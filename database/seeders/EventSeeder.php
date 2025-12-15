@@ -14,8 +14,8 @@ class EventSeeder extends Seeder
     {
         // 1. CARI USER ORGANIZER / ADMIN
         // Logic: Cari yang role organizer dulu, kalau gak ada cari admin, kalau gak ada buat baru.
-        $user = User::where('role', 'organizer')->first() 
-             ?? User::where('role', 'admin')->first();
+        $user = User::where('role', 'eo')->first()
+            ?? User::where('role', 'admin')->first();
 
         // Jaga-jaga kalau UserSeeder lupa dijalankan/gagal
         if (!$user) {
@@ -23,7 +23,7 @@ class EventSeeder extends Seeder
                 'name' => 'Emergency EO',
                 'email' => 'emergency@eo.com',
                 'password' => bcrypt('password'),
-                'role' => 'organizer'
+                'role' => 'eo'
             ]);
         }
 
@@ -32,7 +32,7 @@ class EventSeeder extends Seeder
         if(!$venue) {
             $venue = Venue::create(['name' => 'Convention Hall', 'address' => 'Jakarta', 'capacity' => 5000]);
         }
-        
+
         $category = Category::first();
         if(!$category) {
             $category = Category::create(['name' => 'Music', 'slug' => 'music']);
@@ -45,7 +45,7 @@ class EventSeeder extends Seeder
             'start_time' => now()->addDays(30), // 30 hari lagi
             'end_time' => now()->addDays(30)->addHours(4),
             'venue_id' => $venue->id,
-            'user_id' => $user->id, // << INI YANG BIKIN ERROR TADI
+            'user_id' => $user->id,
             'category_id' => $category->id,
             'banner_image' => 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
             'price' => 1500000,

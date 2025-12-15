@@ -7,9 +7,9 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             {{-- === LOGIKA TAMPILAN BERDASARKAN ROLE === --}}
-            
+
             {{-- 1. TAMPILAN KHUSUS ADMIN (GOD VIEW) --}}
             @if (Auth::user()->role === 'admin')
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6 text-gray-900">
                         <h3 class="text-lg font-bold mb-4">Aksi Cepat Admin</h3>
                         <div class="flex gap-4">
@@ -42,9 +42,21 @@
                     </div>
                 </div>
 
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-bold">Kelola Event Anda</h3>
+                            <p class="text-gray-500 text-sm">Buat event baru atau edit event yang sedang berjalan.</p>
+                        </div>
+                        <a href="{{ route('events.create') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition transform hover:-translate-y-1">
+                            + BUAT EVENT BARU
+                        </a>
+                    </div>
+                </div>
+
 
             {{-- 2. TAMPILAN KHUSUS EO (EVENT ORGANIZER) --}}
-            @elseif (Auth::user()->role === 'organizer')
+            @elseif (Auth::user()->role === 'eo')
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-500">
                         <div class="text-gray-500 text-sm">Tiket Terjual</div>
@@ -66,7 +78,7 @@
                             <h3 class="text-lg font-bold">Kelola Event Anda</h3>
                             <p class="text-gray-500 text-sm">Buat event baru atau edit event yang sedang berjalan.</p>
                         </div>
-                        <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition transform hover:-translate-y-1">
+                        <a href="{{ route('events.create') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition transform hover:-translate-y-1">
                             + BUAT EVENT BARU
                         </a>
                     </div>
@@ -83,7 +95,7 @@
                         <hr class="my-6 border-gray-200">
 
                         {{-- LOGIKA DAFTAR EO (SUDAH DIPERBAIKI WARNANYA) --}}
-                        
+
                         {{-- KONDISI 1: Belum pernah apply --}}
                         @if (!Auth::user()->organizer_profile)
                             <div class="bg-blue-50 border-l-4 border-blue-600 p-6 mt-4 flex flex-col md:flex-row justify-between items-center rounded-r-lg">

@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="min-h-screen flex flex-row-reverse"> {{-- Reverse agar gambar di kiri --}}
-        
+
         {{-- BAGIAN KANAN: Form --}}
         <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-white overflow-y-auto">
             <div class="mx-auto w-full max-w-sm lg:w-96">
@@ -25,11 +25,11 @@
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
 
-                        <div>
+                        {{-- <div>
                             <label class="block text-sm font-medium text-gray-700">NIK (Nomor Induk Kependudukan)</label>
                             <input type="text" name="identity_number" value="{{ old('identity_number') }}" required maxlength="16" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm py-2 px-3">
                             <x-input-error :messages="$errors->get('identity_number')" class="mt-2" />
-                        </div>
+                        </div> --}}
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Nomor HP / WhatsApp</label>

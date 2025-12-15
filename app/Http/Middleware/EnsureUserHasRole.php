@@ -25,7 +25,7 @@ class EnsureUserHasRole
     // Jika mengecek role 'eo'
     if ($role === 'eo') {
         // Cek apakah punya profile DAN status verified
-        if ($user->organizer_profile && $user->organizer_profile->verification_status === 'verified') {
+        if ($user->organizerProfile && $user->organizerProfile->verification_status === 'verified') {
             return $next($request);
         }
     }

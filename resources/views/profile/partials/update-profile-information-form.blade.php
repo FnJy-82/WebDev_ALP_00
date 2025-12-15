@@ -47,6 +47,12 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="identity_number" :value="__('NIK (Nomor Induk Kependudukan)')" />
+            <x-text-input id="identity_number" name="identity_number" type="text" class="mt-1 block w-full" :value="old('identity_number', $user->identity_number)" required maxlength="16" />
+            <x-input-error class="mt-2" :messages="$errors->get('identity_number')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <button>{{ __('Save') }}</button>
 

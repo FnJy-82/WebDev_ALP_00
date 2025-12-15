@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Transaction;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -26,8 +27,16 @@ class TransactionController extends Controller
             'event_id' => 'required|exists:events,id',
             'seat_number' => 'required|string',
             'face_image' => 'required|string', // Base64 dari kamera
-            'consent' => 'accepted'
+            'consent' => 'accepted',
+            'identity_number' => 'required|numeric|digits:16',
         ]);
+
+        $user = User::find(Auth::id());
+
+        if ($user) {
+            $user->identity_number = $request->identity_number;
+            $user->save();
+        }
 
         // 1. Simpan Foto Wajah (Decode Base64)
         $image_parts = explode(";base64,", $request->face_image);

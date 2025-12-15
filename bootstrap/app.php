@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     $middleware->alias([
         'kyc' => \App\Http\Middleware\EnsureKycCompleted::class,
         'role' => \App\Http\Middleware\EnsureUserHasRole::class,
+        'banned' => \App\Http\Middleware\CheckBanned::class,
     ]);
 })
     ->withExceptions(function (Exceptions $exceptions): void {

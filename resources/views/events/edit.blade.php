@@ -80,9 +80,11 @@
                             <a href="{{ route('home') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 transition">
                                 Batal
                             </a>
-                            <x-primary-button>
+                            <div class="pt-4 flex justify-end">
+                            <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform transition hover:-translate-y-0.5">
                                 {{ __('Update Event') }}
-                            </x-primary-button>
+                            </button>
+                        </div>
                         </div>
                     </form>
 

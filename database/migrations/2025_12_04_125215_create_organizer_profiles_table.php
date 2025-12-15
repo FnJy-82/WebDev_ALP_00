@@ -18,7 +18,7 @@ return new class extends Migration
         $table->string('company_name');
         $table->string('bank_name');
         $table->string('bank_account_number');
-        $table->string('document_path')->nullable(); 
+        $table->string('document_path')->nullable();
         $table->string('verification_status')->default('pending'); // pending, verified, rejected
         $table->timestamps();
     });

@@ -17,12 +17,11 @@ class EnsureKycCompleted
 {
     $user = $request->user();
 
-    // Jika user belum login atau NIK/Phone kosong
-    if ($user && (is_null($user->identity_number) || is_null($user->phone_number))) {
-        // Redirect ke halaman edit profile dengan pesan error
-        return redirect()->route('profile.edit')
-            ->with('error', 'You must fill in your identity number and phone number before continuing');
-    }
+    // if ($user && (is_null($user->identity_number) || is_null($user->phone_number))) {
+
+    //     return redirect()->route('profile.edit')
+    //         ->with('error', 'You must fill in your identity number and phone number before continuing');
+    // }
 
     return $next($request);
 }

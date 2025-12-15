@@ -1,14 +1,15 @@
 <?php
 
+use App\Http\Controllers\AdminBanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrganizerController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BanRequestController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\GatekeeperController;
-use App\Http\Controllers\OrganizerApiKeyController;
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureCustomer;
 use App\Http\Middleware\EnsureKycCompleted;
@@ -21,22 +22,23 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Home Page
+// Home Page - NOW PROTECTED FROM BANNED USERS
 Route::get('/', function () {
-    $events = Event::latest()->take(6)->get(); 
+    $events = Event::latest()->take(6)->get();
     return view('home', ['events' => $events]);
-})->name('home');
+})->middleware('banned')->name('home'); // <--- Added middleware here
 
 // List Semua Event (Public)
-Route::get('/events', [EventController::class, 'index'])->name('events.index');
-
+Route::get('/events', [EventController::class, 'index'])
+    ->middleware('banned') // <--- Added middleware here
+    ->name('events.index');
 
 /*
 |--------------------------------------------------------------------------
 | 2. AUTHENTICATED ROUTES (Wajib Login)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'banned'])->group(function () {
 
     Route::get('/dashboard', function () {
         return view('dashboard');
@@ -48,7 +50,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // --- Event Management (CREATE, STORE, EDIT, UPDATE, DESTROY) ---
-    // PENTING: Resource ini harus didefinisikan SEBELUM route public 'show' di bawah
     Route::resource('events', EventController::class)->except(['index', 'show']);
 
     // --- Transaksi ---
@@ -72,25 +73,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/organizer/apply', [OrganizerController::class, 'store'])->name('organizer.store');
     });
 
-    Route::get('/organizer/api-key', [OrganizerApiKeyController::class, 'index'])->name('organizer.apikey');
-    Route::post('/organizer/api-key', [OrganizerApiKeyController::class, 'generate'])->name('organizer.apikey.generate');
+    Route::middleware(['auth', 'verified'])->prefix('organizer')->group(function () {
+        Route::get('/users/search', [BanRequestController::class, 'search'])->name('organizer.users.search');
+
+        Route::get('/ban-request/{user}', [BanRequestController::class, 'create'])->name('organizer.ban-request.create');
+        Route::post('/ban-request', [BanRequestController::class, 'store'])->name('organizer.ban-request.store');
+    });
 
     // --- Admin ---
     Route::middleware(EnsureAdmin::class)->prefix('admin')->group(function () {
         Route::get('/verifications', [AdminController::class, 'pendingOrganizers'])->name('admin.verifications');
         Route::patch('/approve/{id}', [AdminController::class, 'approveOrganizer'])->name('admin.approve');
+
+        Route::get('/ban-requests', [AdminBanController::class, 'index'])->name('admin.ban-requests.index');
+        Route::patch('/ban-requests/{id}', [AdminBanController::class, 'update'])->name('admin.ban-request.update');
     });
 });
 
-
+Route::view('/banned', 'banned')->name('banned');
 /*
 |--------------------------------------------------------------------------
 | 3. PUBLIC EVENT DETAIL (TARUH PALING BAWAH!)
 |--------------------------------------------------------------------------
-| Kenapa di bawah? Supaya URL "/events/create" tidak dianggap sebagai 
+| Kenapa di bawah? Supaya URL "/events/create" tidak dianggap sebagai
 | "/events/{id}" oleh Laravel.
 */
-Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+Route::get('/events/{event}', [EventController::class, 'edit'])->name('events.edit');
 
 
 require __DIR__ . '/auth.php';

@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'admin',
             'email_verified_at' => now(),
+            'phone_number' => '081234567890',
         ]);
 
         // 2. AKUN ORGANIZER (PENTING: Untuk Pemilik Event di EventSeeder)
@@ -24,8 +25,9 @@ class UserSeeder extends Seeder
             'name' => 'Event Organizer Utama',
             'email' => 'eo@ticketpro.com',
             'password' => Hash::make('password'),
-            'role' => 'organizer',
+            'role' => 'eo',
             'email_verified_at' => now(),
+            'phone_number' => '089876543210',
         ]);
 
         // 3. AKUN CUSTOMER (Untuk Demo Beli Tiket)
@@ -35,8 +37,9 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'customer',
             'email_verified_at' => now(),
+            'phone_number' => '082112345678',
         ]);
-        
+
         // 4. Dummy Tambahan (Opsional)
         User::factory(5)->create(['role' => 'customer']);
     }
