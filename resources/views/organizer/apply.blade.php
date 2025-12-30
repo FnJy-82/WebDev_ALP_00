@@ -30,19 +30,19 @@
                         </div>
 
                         <div class="mt-4">
-                            <x-input-label for="bank_number" :value="__('Nomor Rekening')" />
-                            <x-text-input id="bank_number" class="block mt-1 w-full" type="number" name="bank_number" :value="old('bank_number')" required />
-                            <x-input-error :messages="$errors->get('bank_number')" class="mt-2" />
+                            <x-input-label for="bank_account_number" :value="__('Nomor Rekening')" />
+                            <x-text-input id="bank_account_number" class="block mt-1 w-full" type="number" name="bank_account_number" :value="old('bank_account_number')" required />
+                            <x-input-error :messages="$errors->get('bank_account_number')" class="mt-2" />
                         </div>
 
                         <div class="mt-4">
-                            <x-input-label for="document" :value="__('Upload Legalitas (KTP/NPWP) - PDF/JPG')" />
-                            <input id="document" name="document" type="file" class="block mt-1 w-full border border-gray-300 rounded-md shadow-sm p-2" required>
-                            <x-input-error :messages="$errors->get('document')" class="mt-2" />
+                            <x-input-label for="document_path" :value="__('Upload Legalitas (KTP/NPWP) - PDF/JPG')" />
+                            <input id="document_path" name="document_path" type="file" class="block mt-1 w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                            <x-input-error :messages="$errors->get('document_path')" class="mt-2" />
                         </div>
 
                         <div class="flex items-center justify-end mt-6">
-                            <button>
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                 {{ __('Ajukan Verifikasi EO') }}
                             </button>
                         </div>

@@ -19,10 +19,10 @@ class OrganizerController extends Controller
             'company_name' => 'required|string',
             'bank_name' => 'required|string',
             'bank_account_number' => 'required|numeric',
-            'document' => 'required|file|mimes:pdf,jpg,png|max:2048',
+            'document_path' => 'required|file|mimes:pdf,jpg,png|max:2048',
         ]);
 
-        $path = $request->file('document')->store('documents', 'public');
+        $path = $request->file('document_path')->store('documents', 'public');
 
         OrganizerProfile::create([
             'user_id' => Auth::id(),

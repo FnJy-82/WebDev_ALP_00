@@ -13,40 +13,59 @@
             {{-- 1. TAMPILAN KHUSUS ADMIN (GOD VIEW) --}}
             @if (Auth::user()->role === 'admin')
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    {{-- Total Revenue --}}
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-600">
                         <div class="text-gray-500 text-sm font-medium uppercase">Total Revenue Platform</div>
-                        <div class="mt-2 text-3xl font-bold text-gray-900">Rp 125.000.000</div>
-                        <div class="text-green-500 text-sm mt-1">▲ 12% dari bulan lalu</div>
+                        <div class="mt-2 text-3xl font-bold text-gray-900">
+                            Rp {{ number_format($totalRevenue, 0, ',', '.') }}
+                        </div>
+                        <div class="text-green-500 text-sm mt-1">
+                            ▲ {{ $growthPercentage }}% dari bulan lalu
+                        </div>
                     </div>
 
+                    {{-- Pending EO --}}
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-yellow-500">
                         <div class="text-gray-500 text-sm font-medium uppercase">Pending EO Approval</div>
-                        <div class="mt-2 text-3xl font-bold text-gray-900">3 Organizer</div>
-                        <a href="#" class="text-blue-600 text-sm mt-1 hover:underline">Lihat & Verifikasi →</a>
+                        <div class="mt-2 text-3xl font-bold text-gray-900">
+                            {{ $pendingEOs }} Organizer
+                        </div>
+                        @if($pendingEOs > 0)
+                            {{-- Assuming you have a route for admin to approve EOs --}}
+                            <a href="{{ route('admin.organizers.index') }}" class="text-blue-600 text-sm mt-1 hover:underline">Lihat & Verifikasi →</a>
+                        @else
+                            <span class="text-gray-400 text-sm mt-1">Semua aman</span>
+                        @endif
                     </div>
 
+                    {{-- Total Users --}}
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-cyan-500">
                         <div class="text-gray-500 text-sm font-medium uppercase">Total Pengguna</div>
-                        <div class="mt-2 text-3xl font-bold text-gray-900">1,240 User</div>
+                        <div class="mt-2 text-3xl font-bold text-gray-900">
+                            {{ number_format($totalUsers) }} User
+                        </div>
                         <div class="text-gray-400 text-sm mt-1">Update Realtime</div>
                     </div>
                 </div>
 
+                {{-- Action Buttons --}}
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6 text-gray-900">
                         <h3 class="text-lg font-bold mb-4">Aksi Cepat Admin</h3>
                         <div class="flex gap-4">
-                            <button class="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 transition">Verifikasi Event Baru</button>
-                            <button class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition">Cek Laporan Withdrawal</button>
+                            {{-- Ensure these routes exist in your web.php --}}
+                            <a href="#" class="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 transition">Verifikasi Event Baru</a>
+                            <a href="#" class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition">Cek Laporan Withdrawal</a>
                         </div>
                     </div>
                 </div>
 
+                {{-- Create Event for Admin (Optional if Admin also makes events) --}}
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 flex justify-between items-center">
                         <div>
                             <h3 class="text-lg font-bold">Kelola Event Anda</h3>
-                            <p class="text-gray-500 text-sm">Buat event baru atau edit event yang sedang berjalan.</p>
+                            <p class="text-gray-500 text-sm">Buat event official platform.</p>
                         </div>
                         <a href="{{ route('events.create') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition transform hover:-translate-y-1">
                             + BUAT EVENT BARU
@@ -60,15 +79,21 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-500">
                         <div class="text-gray-500 text-sm">Tiket Terjual</div>
-                        <div class="mt-2 text-3xl font-bold text-gray-900">850</div>
+                        <div class="mt-2 text-3xl font-bold text-gray-900">
+                            {{ number_format($ticketsSold) }}
+                        </div>
                     </div>
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-green-500">
                         <div class="text-gray-500 text-sm">Total Pendapatan Event</div>
-                        <div class="mt-2 text-3xl font-bold text-gray-900">Rp 45.000.000</div>
+                        <div class="mt-2 text-3xl font-bold text-gray-900">
+                            Rp {{ number_format($eoRevenue, 0, ',', '.') }}
+                        </div>
                     </div>
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-purple-500">
-                        <div class="text-gray-500 text-sm">Event Aktif</div>
-                        <div class="mt-2 text-3xl font-bold text-gray-900">2 Event</div>
+                        <div class="text-gray-500 text-sm">Event Aktif / Upcoming</div>
+                        <div class="mt-2 text-3xl font-bold text-gray-900">
+                            {{ $activeEvents }} Event
+                        </div>
                     </div>
                 </div>
 
@@ -94,7 +119,7 @@
 
                         <hr class="my-6 border-gray-200">
 
-                        {{-- LOGIKA DAFTAR EO (SUDAH DIPERBAIKI WARNANYA) --}}
+                        {{-- LOGIKA STATUS EO --}}
 
                         {{-- KONDISI 1: Belum pernah apply --}}
                         @if (!Auth::user()->organizer_profile)
@@ -118,11 +143,11 @@
                                 <p class="text-yellow-700 mt-1 ml-9">Mohon tunggu 1x24 jam. Admin sedang memverifikasi data Anda.</p>
                             </div>
 
-                        {{-- KONDISI 3: Rejected/Verified tapi role belum berubah (Jaga-jaga) --}}
+                        {{-- KONDISI 3: Rejected/Verified tapi role belum berubah --}}
                         @elseif(Auth::user()->organizer_profile->verification_status === 'verified')
                             <div class="bg-green-50 border-l-4 border-green-500 p-6 mt-4 rounded-r-lg">
                                 <h4 class="font-bold text-green-800">Selamat! Akun Anda Terverifikasi</h4>
-                                <p class="text-green-700">Silakan logout dan login ulang untuk memperbarui status menu Anda.</p>
+                                <p class="text-green-700">Silakan logout dan login ulang untuk memperbarui status menu Anda menjadi EO.</p>
                             </div>
                         @endif
 

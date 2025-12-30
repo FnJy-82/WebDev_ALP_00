@@ -70,7 +70,9 @@
 
             <div class="absolute bottom-0 left-0 p-16 text-white w-full">
                 <h1 class="text-5xl font-extrabold mb-4 tracking-tight">TicketPro.</h1>
-                <p class="text-xl font-light opacity-90 leading-relaxed">Platform manajemen event paling aman dengan teknologi <br> <span class="font-bold text-cyan-300">Face-Lock Verification.</span></p>
+                <p class="text-xl font-light opacity-90 leading-relaxed">Platform manajemen event paling aman dengan teknologi
+                    <br> <span class="font-bold text-cyan-300">Face-Lock Verification.</span>
+                </p>
             </div>
         </div>
 

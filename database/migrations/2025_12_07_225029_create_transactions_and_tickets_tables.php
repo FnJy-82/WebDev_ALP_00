@@ -8,38 +8,49 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // 1. Tabel Transaksi (Mencatat Pembelian)
+        Schema::create('ticket_categories', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('event_id')->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->decimal('price', 12, 2);
+            $table->integer('total_quota')->default(0);
+            $table->timestamps();
+        });
+
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->dateTime('transaction_date');
-            $table->decimal('total_amount', 10, 2);
-            $table->string('status')->default('success'); // pending, success, failed
-            $table->string('snap_token')->nullable(); // Untuk payment gateway nanti
+            $table->decimal('total_amount', 12, 2);
+            $table->string('status')->default('pending');
+            $table->string('snap_token')->nullable();
             $table->timestamps();
         });
 
-        // 2. Tabel Tiket (Hasil Pembelian / Identity Binding)
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Pemilik Tiket
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
-            $table->foreignId('transaction_id')->constrained()->onDelete('cascade');
-            
-            $table->string('seat_number'); // Hasil Seat Generator
-            $table->string('face_photo_path'); // Foto Selfie saat War
-            $table->string('status')->default('active'); // active, checked_in, refunded
-            $table->string('qr_code_hash')->unique(); // String unik untuk QR
+            $table->foreignId('category_id')->constrained('ticket_categories')->onDelete('cascade');
+
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('transaction_id')->nullable()->constrained()->onDelete('cascade');
+
+            $table->string('seat_number');
+            $table->string('row_label');
+
+            $table->string('face_photo_path')->nullable();
+            $table->string('qr_code_hash')->nullable()->unique();
+
+            $table->string('status')->default('available');
             $table->timestamps();
         });
 
-        // 3. Tabel Wallet Mutation (Riwayat Saldo)
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('type'); // credit (masuk), debit (keluar)
-            $table->decimal('amount', 10, 2);
+            $table->string('type');
+            $table->decimal('amount', 12, 2);
             $table->string('description');
             $table->timestamps();
         });
@@ -50,5 +61,6 @@ return new class extends Migration
         Schema::dropIfExists('wallets');
         Schema::dropIfExists('tickets');
         Schema::dropIfExists('transactions');
+        Schema::dropIfExists('ticket_categories');
     }
 };

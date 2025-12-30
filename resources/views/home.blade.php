@@ -91,6 +91,48 @@
                 <p class="text-slate-500 mt-2">Dapatkan tiketmu sebelum kehabisan.</p>
             </div>
 
+            <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-100 mb-16 -mt-8 relative z-30">
+                <form action="{{ url('/') }}" method="GET" class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-grow">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Cari Event</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input type="text" name="search" value="{{ request('search') }}"
+                                class="pl-10 block w-full rounded-lg border-slate-300 bg-slate-50 text-slate-900 focus:ring-cyan-500 focus:border-cyan-500 p-2.5"
+                                placeholder="Nama konser, artis, atau event...">
+                        </div>
+                    </div>
+
+                    <div class="w-full md:w-1/4">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
+                        <select name="category"
+                            class="block w-full rounded-lg border-slate-300 bg-slate-50 text-slate-900 focus:ring-cyan-500 focus:border-cyan-500 p-2.5">
+                            <option value="">Semua Kategori</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ request('category') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- 3. Submit Button --}}
+                    <div class="w-full md:w-auto flex items-end">
+                        <button type="submit"
+                            class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-lg hover:shadow-cyan-500/50 h-[42px]">
+                            Cari
+                        </button>
+                    </div>
+                </form>
+            </div>
+
             @if (isset($events) && count($events) > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach ($events as $event)
@@ -102,7 +144,7 @@
                                     class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
                                 <div
                                     class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide">
-                                    {{ $event->category->name ?? 'General' }}
+                                    {{ $event->categories->first()->name ?? 'General' }}
                                 </div>
                             </div>
 
@@ -122,6 +164,11 @@
                                 <p class="text-slate-500 text-sm line-clamp-2 mb-6">
                                     {{ $event->description }}
                                 </p>
+
+                                <a href="{{ route('events.show', $event->id) }}"
+                                    class="block w-full py-2 bg-slate-100 text-slate-800 text-center font-bold rounded-lg hover:bg-slate-200 transition mb-4">
+                                    View Details
+                                </a>
 
                                 <a href="{{ route('checkout.create', $event->id ?? 1) }}"
                                     class="block w-full py-3 bg-slate-900 text-white text-center font-bold rounded-xl hover:bg-blue-600 transition shadow-lg">

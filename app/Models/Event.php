@@ -4,44 +4,42 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\TicketCategory;
 
 class Event extends Model
 {
     use HasFactory;
 
-    // Sesuaikan dengan kolom di migration 'create_events_table'
     protected $fillable = [
-        'user_id', 
-        'venue_id', 
-        'title', 
-        'description', 
-        'start_time', 
-        'end_time', 
-        'banner_image', 
-        'status'
+        'user_id',
+        'venue_id',
+        'title',
+        'description',
+        'start_time',
+        'end_time',
+        'banner_image',
+        'status',
+        'price',
+        'quota',
     ];
 
-    // Relasi ke User (Organizer)
-    public function organizer() { 
-        return $this->belongsTo(User::class, 'user_id'); 
+    public function organizer() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Relasi ke Venue
     public function venue() {
         return $this->belongsTo(Venue::class);
     }
 
-    // Relasi Many-to-Many ke Category (Penyebab Error)
+    public function ticketCategories() {
+        return $this->hasMany(TicketCategory::class);
+    }
+
     public function categories() {
         return $this->belongsToMany(Category::class);
     }
 
-    // Relasi ke Tiket
-    public function tickets() { 
-        return $this->hasMany(Ticket::class); 
-    }
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
+    public function tickets() {
+        return $this->hasMany(Ticket::class);
     }
 }

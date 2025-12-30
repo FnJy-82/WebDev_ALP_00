@@ -18,9 +18,20 @@ class TicketController extends Controller
         $ticket = Ticket::with('event', 'user')->where('user_id', Auth::id())->findOrFail($id);
         return view('tickets.show', compact('ticket'));
     }
-    
+
     public function resale($id) {
         // Placeholder untuk fitur resale nanti
         return back()->with('status', 'Fitur Resale belum aktif.');
     }
+
+    public function allTickets()
+{
+    // Fetch all tickets with related User and Event data
+    // Use latest() to see new purchases first
+    $tickets = \App\Models\Ticket::with(['user', 'event'])
+                ->latest()
+                ->paginate(20);
+
+    return view('admin.tickets.index', compact('tickets'));
+}
 }

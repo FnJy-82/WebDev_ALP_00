@@ -11,59 +11,69 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
-    // Menampilkan halaman Checkout
-    public function create(Event $event)
+    public function create($eventId)
     {
+        $event = Event::with(['venue', 'ticketCategories.tickets'])->findOrFail($eventId);
         return view('checkout.create', compact('event'));
     }
 
-    // Proses "WAR TIKET" (Create Transaction & Ticket)
     public function store(Request $request)
     {
         $request->validate([
-            'event_id' => 'required|exists:events,id',
-            'seat_number' => 'required|string',
-            'face_image' => 'required|string', // Base64 dari kamera
-            'consent' => 'accepted',
+            'event_id'        => 'required|exists:events,id',
+            'seat_number'     => 'required|string',
             'identity_number' => 'required|numeric|digits:16',
+            'consent'         => 'accepted',
+            'face_image'      => 'required|image|mimes:jpeg,png,jpg|max:4096',
         ]);
 
-        $user = User::find(Auth::id());
+        return DB::transaction(function () use ($request) {
+            $user = User::find(Auth::id());
+            if ($user) {
+                $user->identity_number = $request->identity_number;
+                $user->save();
+            }
 
-        if ($user) {
-            $user->identity_number = $request->identity_number;
-            $user->save();
-        }
+            $ticket = Ticket::where('event_id', $request->event_id)
+                ->where('seat_number', $request->seat_number)
+                // Lock for update ensures atomic consistency during high traffic
+                ->lockForUpdate()
+                ->first();
 
-        // 1. Simpan Foto Wajah (Decode Base64)
-        $image_parts = explode(";base64,", $request->face_image);
-        $image_base64 = base64_decode($image_parts[1]);
-        $fileName = 'face_verif/' . Str::random(20) . '.jpg';
-        Storage::disk('public')->put($fileName, $image_base64);
+            if (!$ticket || $ticket->status !== 'available') {
+                return back()->withErrors(['seat_number' => 'Maaf, kursi ini baru saja diambil orang lain!']);
+            }
 
-        // 2. Buat Record Transaksi
-        $transaction = Transaction::create([
-            'user_id' => Auth::id(),
-            'event_id' => $request->event_id,
-            'transaction_date' => Carbon::now(),
-            'total_amount' => 150000, // Hardcode dulu atau ambil dari event price
-            'status' => 'success', // Asumsi langsung sukses
-        ]);
+            $imagePath = $request->file('face_image')->store('face_verif', 'public');
 
-        // 3. Terbitkan Tiket (Create)
-        $ticket = Ticket::create([
-            'user_id' => Auth::id(),
-            'event_id' => $request->event_id,
-            'transaction_id' => $transaction->id,
-            'seat_number' => $request->seat_number,
-            'face_photo_path' => $fileName,
-            'status' => 'active',
-            'qr_code_hash' => Str::uuid(), // Token Unik QR
-        ]);
+            $ticketPrice = $ticket->category->price ?? 0;
 
-        return redirect()->route('tickets.show', $ticket->id)->with('success', 'Pembelian Berhasil! Tiket diamankan.');
+            $transaction = Transaction::create([
+                'user_id'          => Auth::id(),
+                'event_id'         => $request->event_id,
+                'ticket_id'        => $ticket->id,
+                'seat_number'      => $ticket->seat_number,
+                'identity_number'  => $request->identity_number,
+                'face_image_path'  => $imagePath,
+                'transaction_date' => Carbon::now(),
+                'total_amount'     => $ticketPrice,
+                'status'           => 'success',
+            ]);
+
+            $ticket->update([
+                'user_id'         => Auth::id(),
+                'transaction_id'  => $transaction->id,
+                'face_photo_path' => $imagePath,
+                'status'          => 'sold',
+                'qr_code_hash'    => Str::uuid(),
+            ]);
+
+            return redirect()->route('tickets.show', $ticket->id)
+                ->with('success', 'Pembelian Berhasil! Tiket ' . $ticket->seat_number . ' diamankan.');
+        });
     }
 }

@@ -5,15 +5,17 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrganizerController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BanRequestController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventSeatController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\GatekeeperController;
+use App\Http\Controllers\HomeController;
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureCustomer;
 use App\Http\Middleware\EnsureKycCompleted;
-use App\Models\Event;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,11 +24,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Home Page - NOW PROTECTED FROM BANNED USERS
-Route::get('/', function () {
-    $events = Event::latest()->take(6)->get();
-    return view('home', ['events' => $events]);
-})->middleware('banned')->name('home'); // <--- Added middleware here
+Route::get('/', [HomeController::class, 'index'])->middleware('banned')->name('home');
 
 // List Semua Event (Public)
 Route::get('/events', [EventController::class, 'index'])
@@ -40,9 +38,7 @@ Route::get('/events', [EventController::class, 'index'])
 */
 Route::middleware(['auth', 'verified', 'banned'])->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // --- Profile ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -51,6 +47,16 @@ Route::middleware(['auth', 'verified', 'banned'])->group(function () {
 
     // --- Event Management (CREATE, STORE, EDIT, UPDATE, DESTROY) ---
     Route::resource('events', EventController::class)->except(['index', 'show']);
+
+    // 1. View the "Manage Seats" page
+    Route::get('/events/{event}/manage-seats', [EventController::class, 'manageSeats'])
+        ->name('events.manage-seats');
+
+    // 2. Form action to Generate the seats
+    Route::post('/events/{event}/generate-seats', [EventSeatController::class, 'generate'])
+        ->name('events.seats.generate');
+
+    Route::patch('/events/{event}/cancel', [EventController::class, 'cancel'])->name('events.cancel');
 
     // --- Transaksi ---
     Route::middleware([EnsureKycCompleted::class])->group(function () {
@@ -88,6 +94,16 @@ Route::middleware(['auth', 'verified', 'banned'])->group(function () {
         Route::get('/ban-requests', [AdminBanController::class, 'index'])->name('admin.ban-requests.index');
         Route::patch('/ban-requests/{id}', [AdminBanController::class, 'update'])->name('admin.ban-request.update');
     });
+
+    // --- Admin: View ALL Global Tickets ---
+    Route::middleware(EnsureAdmin::class)->group(function () {
+        Route::get('/admin/tickets', [TicketController::class, 'allTickets'])->name('admin.tickets.index');
+    });
+
+    // --- EO: View Attendees for specific events ---
+    // You likely want to see who bought tickets for a specific event
+    Route::get('/events/{event}/attendees', [EventController::class, 'attendees'])
+        ->name('events.attendees');
 });
 
 Route::view('/banned', 'banned')->name('banned');
@@ -98,7 +114,7 @@ Route::view('/banned', 'banned')->name('banned');
 | Kenapa di bawah? Supaya URL "/events/create" tidak dianggap sebagai
 | "/events/{id}" oleh Laravel.
 */
-Route::get('/events/{event}', [EventController::class, 'edit'])->name('events.edit');
 
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
 require __DIR__ . '/auth.php';
