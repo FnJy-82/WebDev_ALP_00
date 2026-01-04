@@ -1,0 +1,27 @@
+FROM php:8.4-fpm
+
+WORKDIR /var/www/html
+
+RUN apt-get update && apt-get install -y \
+    git curl libpng-dev libonig-dev libxml2-dev zip unzip \
+    libzip-dev libicu-dev libjpeg-dev libfreetype6-dev gnupg \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
+
+COPY . .
+
+RUN git config --global --add safe.directory /var/www/html
+
+RUN composer install --no-interaction --optimize-autoloader
+RUN npm install
+RUN npm run build
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+EXPOSE 9000
+CMD ["php-fpm"]
