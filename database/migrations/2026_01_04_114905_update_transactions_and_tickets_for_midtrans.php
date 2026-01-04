@@ -13,7 +13,6 @@ return new class extends Migration
     {
        Schema::table('transactions', function (Blueprint $table) {
             $table->string('midtrans_booking_code')->nullable()->after('id');
-            $table->string('snap_token')->nullable()->after('status');
             $table->string('payment_type')->nullable();
         });
 

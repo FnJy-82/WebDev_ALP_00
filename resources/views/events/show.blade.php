@@ -95,10 +95,14 @@
                         <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 sticky top-24">
                             <h3 class="font-bold text-lg text-gray-800 mb-4">Informasi Tiket</h3>
 
+                            @php
+                                $sisaKuota = $event->tickets->where('status', 'available')->count();
+                            @endphp
+
                             <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-100">
                                 <span class="text-gray-600">Sisa Kuota</span>
-                                <span class="font-bold {{ $event->quota > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                    {{ $event->quota }} Tiket
+                                <span class="font-bold {{ $sisaKuota > 0 ? 'text-green-600' : 'text-red-600' }}">
+                                    {{ $sisaKuota }} Tiket
                                 </span>
                             </div>
 
@@ -109,7 +113,7 @@
                                 </span>
                             </div>
 
-                            @if ($event->quota > 0)
+                            @if ($sisaKuota > 0)
                                 @auth
                                     <a href="{{ route('checkout.create', $event->id) }}"
                                         class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition transform hover:scale-105 shadow-md">

@@ -49,4 +49,28 @@ class GatekeeperController extends Controller
             'face_image' => asset('storage/' . $ticket->face_photo_path)
         ]);
     }
+    public function verifyByHash($hash)
+{
+    // Cari tiket berdasarkan QR Hash
+    $ticket = Ticket::with(['user', 'event'])->where('qr_code_hash', $hash)->first();
+
+    if (!$ticket) {
+        return redirect()->route('gatekeeper.scan')->with('error', 'Tiket tidak ditemukan!');
+    }
+
+    // Cek Status: Simpan pesan jika sudah pernah masuk sebelumnya
+    $statusMessage = 'BERHASIL MASUK';
+    $statusColor = 'green';
+
+    if ($ticket->status === 'checked_in') {
+        $statusMessage = 'PERINGATAN: SUDAH PERNAH MASUK!';
+        $statusColor = 'red';
+    } else {
+        // Jika belum masuk, update status jadi checked_in
+        $ticket->update(['status' => 'checked_in']);
+    }
+
+    // Tampilkan View Result (Kita buat di langkah 3)
+    return view('gatekeeper.result', compact('ticket', 'statusMessage', 'statusColor'));
+}
 }

@@ -73,9 +73,9 @@ Route::middleware(['auth', 'verified', 'banned'])->group(function () {
 
     // --- Gatekeeper ---
     Route::get('/gatekeeper/scan', [GatekeeperController::class, 'index'])->name('gatekeeper.scan');
-    Route::post('/gatekeeper/checkin', [GatekeeperController::class, 'store'])->name('gatekeeper.checkin');
+    // Route::post('/gatekeeper/checkin', [GatekeeperController::class, 'store'])->name('gatekeeper.checkin');
     
-    // Route::get('/gatekeeper/verify/{hash}', [GatekeeperController::class, 'verifyByHash'])->name('gatekeeper.verify');
+    Route::get('/gatekeeper/verify/{hash}', [GatekeeperController::class, 'verifyByHash'])->name('gatekeeper.verify');
     // Route::post('/gatekeeper/checkin/{ticket}', [GatekeeperController::class, 'checkIn'])->name('gatekeeper.checkin');
     
     // --- Organizer Tools ---
@@ -113,6 +113,9 @@ Route::middleware(['auth', 'verified', 'banned'])->group(function () {
     // You likely want to see who bought tickets for a specific event
     Route::get('/events/{event}/attendees', [EventController::class, 'attendees'])
         ->name('events.attendees');
+
+// Di dalam group Authenticated (Route::middleware(['auth'...))
+    Route::post('/my-tickets/{id}/resale', [TicketController::class, 'resale'])->name('tickets.resale');
 });
 
 Route::view('/banned', 'banned')->name('banned');

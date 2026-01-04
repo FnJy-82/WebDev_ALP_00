@@ -55,6 +55,10 @@
                             <x-nav-link :href="route('organizer.users.search')" :active="request()->routeIs('organizer.users.search')">
                                 {{ __('Find & Report User') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('gatekeeper.scan')" :active="request()->routeIs('gatekeeper.scan')"
+                                class="text-slate-500 hover:text-blue-600 border-transparent hover:border-gray-300">
+                                {{ __('Scan Tiket') }}
+                            </x-nav-link>
                         @endif
 
                         {{-- 4. MENU KHUSUS CUSTOMER --}}
@@ -63,11 +67,7 @@
                                 class="text-slate-500 hover:text-blue-600 border-transparent hover:border-gray-300">
                                 {{ __('Tiket Saya') }}
                             </x-nav-link>
-
-                            {{-- <x-nav-link :href="route('wallet.index')" :active="request()->routeIs('wallet.index')"
-                                class="text-slate-500 hover:text-blue-600 border-transparent hover:border-gray-300">
-                                {{ __('Dompet') }}
-                            </x-nav-link> --}}
+                    
                         @endif
                     @endauth
                 </div>

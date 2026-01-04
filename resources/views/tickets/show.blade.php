@@ -55,6 +55,26 @@
                         </p>
                     </div>
                 </div>
+
+                {{-- --- RESALE / REFUND SECTION --- --}}
+                @if($ticket->status !== 'checked_in')
+                <div class="mt-8 pt-6 border-t border-gray-100">
+                    <div class="bg-red-50 p-4 rounded-xl border border-red-100 text-center">
+                        <h3 class="text-sm font-bold text-red-800 mb-1">Batalkan Kedatangan?</h3>
+                        <p class="text-xs text-red-600 mb-4">
+                            Tiket akan dihapus dan dana dikembalikan 100% ke Wallet.
+                        </p>
+
+                        <form action="{{ route('tickets.resale', $ticket->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin melakukan refund? Tiket ini akan dihapus permanen.');">
+                            @csrf
+                            <button type="submit" class="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-md transition-all">
+                                Refund Tiket Sekarang
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                @endif
+                {{-- ------------------------------- --}}
             </div>
         </div>
     </div>
