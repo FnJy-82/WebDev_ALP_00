@@ -75,8 +75,8 @@ Route::middleware(['auth', 'verified', 'banned'])->group(function () {
     Route::get('/gatekeeper/scan', [GatekeeperController::class, 'index'])->name('gatekeeper.scan');
     Route::post('/gatekeeper/checkin', [GatekeeperController::class, 'store'])->name('gatekeeper.checkin');
     
-    Route::get('/gatekeeper/verify/{hash}', [GatekeeperController::class, 'verifyByHash'])->name('gatekeeper.verify');
-    Route::post('/gatekeeper/checkin/{ticket}', [GatekeeperController::class, 'checkIn'])->name('gatekeeper.checkin');
+    // Route::get('/gatekeeper/verify/{hash}', [GatekeeperController::class, 'verifyByHash'])->name('gatekeeper.verify');
+    // Route::post('/gatekeeper/checkin/{ticket}', [GatekeeperController::class, 'checkIn'])->name('gatekeeper.checkin');
     
     // --- Organizer Tools ---
     Route::middleware(EnsureCustomer::class)->group(function () {
@@ -98,6 +98,10 @@ Route::middleware(['auth', 'verified', 'banned'])->group(function () {
 
         Route::get('/ban-requests', [AdminBanController::class, 'index'])->name('admin.ban-requests.index');
         Route::patch('/ban-requests/{id}', [AdminBanController::class, 'update'])->name('admin.ban-request.update');
+
+        Route::get('/events', [AdminController::class, 'allEvents'])->name('admin.events.index');
+        Route::get('/events/{id}/attendees', [AdminController::class, 'eventAttendees'])->name('admin.events.attendees');
+        Route::patch('/events/{id}/approve', [AdminController::class, 'approveEvent'])->name('admin.events.approve');
     });
 
     // --- Admin: View ALL Global Tickets ---

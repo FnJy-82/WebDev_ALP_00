@@ -18,7 +18,6 @@ return new class extends Migration
         });
 
         Schema::table('tickets', function (Blueprint $table) {
-            // Kolom untuk menandai apakah orang sudah masuk atau belum
             $table->boolean('is_checked_in')->default(false)->after('status');
         });
     }

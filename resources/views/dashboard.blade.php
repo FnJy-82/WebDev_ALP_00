@@ -14,7 +14,7 @@
             @if (Auth::user()->role === 'admin')
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     {{-- Total Revenue --}}
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-600">
+                    {{-- <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-600">
                         <div class="text-gray-500 text-sm font-medium uppercase">Total Revenue Platform</div>
                         <div class="mt-2 text-3xl font-bold text-gray-900">
                             Rp {{ number_format($totalRevenue, 0, ',', '.') }}
@@ -22,7 +22,7 @@
                         <div class="text-green-500 text-sm mt-1">
                             ▲ {{ $growthPercentage }}% dari bulan lalu
                         </div>
-                    </div>
+                    </div> --}}
 
                     {{-- Pending EO --}}
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-yellow-500">
@@ -49,19 +49,19 @@
                 </div>
 
                 {{-- Action Buttons --}}
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+                {{-- <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6 text-gray-900">
                         <h3 class="text-lg font-bold mb-4">Aksi Cepat Admin</h3>
-                        <div class="flex gap-4">
+                        <div class="flex gap-4"> --}}
                             {{-- Ensure these routes exist in your web.php --}}
-                            <a href="#" class="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 transition">Verifikasi Event Baru</a>
+                            {{-- <a href="#" class="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 transition">Verifikasi Event Baru</a>
                             <a href="#" class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition">Cek Laporan Withdrawal</a>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 {{-- Create Event for Admin (Optional if Admin also makes events) --}}
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                {{-- <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 flex justify-between items-center">
                         <div>
                             <h3 class="text-lg font-bold">Kelola Event Anda</h3>
@@ -71,7 +71,7 @@
                             + BUAT EVENT BARU
                         </a>
                     </div>
-                </div>
+                </div> --}}
 
 
             {{-- 2. TAMPILAN KHUSUS EO (EVENT ORGANIZER) --}}

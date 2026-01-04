@@ -20,14 +20,13 @@ class DashboardController extends Controller
         // === LOGIC FOR ADMIN ===
         if ($user->role === 'admin') {
             // 1. Total Platform Revenue (Sum of all success transactions)
-            $data['totalRevenue'] = Transaction::where('status', 'success')->sum('total_amount');
 
             // 2. Pending EO Approvals
             // Assuming your model is 'Organizer' and column is 'verification_status'
             $data['pendingEOs'] = OrganizerProfile::where('verification_status', 'pending')->count();
 
             // 3. Total Users
-            $data['totalUsers'] = User::count();
+            $data['totalUsers'] = User::where('role', 'customer')->count();
 
             // 4. Growth Calculation (Revenue this month vs last month)
             $currentMonth = Transaction::where('status', 'success')

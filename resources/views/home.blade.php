@@ -170,19 +170,19 @@
                                     View Details
                                 </a>
 
-                                <a href="{{ route('checkout.create', $event->id ?? 1) }}"
+                                {{-- <a href="{{ route('checkout.create', $event->id ?? 1) }}"
                                     class="block w-full py-3 bg-slate-900 text-white text-center font-bold rounded-xl hover:bg-blue-600 transition shadow-lg">
                                     Beli Tiket
-                                </a>
+                                </a> --}}
 
-                                @if (Auth::user()?->role === 'admin' || Auth::user()?->role === 'eo')
+                                {{-- @if (Auth::user()?->role === 'admin' || Auth::user()?->role === 'eo')
                                     <div class="mt-4 text-center">
                                         <a href="{{ route('events.edit', $event->id) }}"
                                             class="text-sm text-cyan-600 hover:underline">
                                             Kelola Event →
                                         </a>
                                     </div>
-                                @endif
+                                @endif --}}
                             </div>
                         </div>
                     @endforeach

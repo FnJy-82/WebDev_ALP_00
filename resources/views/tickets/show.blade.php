@@ -62,7 +62,7 @@
     {{-- Script QR --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
-        const ticketId = "{{ $ticket->id }}";
+        const ticketId = "{{ $ticket->qr_code_hash }}";
         const qrContainer = document.getElementById('qrcode');
         let timeLeft = 30;
 

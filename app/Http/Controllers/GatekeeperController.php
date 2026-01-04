@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ticket;
+use App\Models\User; // (Actually, Ticket::with('user') handles the relation, but good practice to be aware)
 
 class GatekeeperController extends Controller
 {
@@ -21,7 +22,7 @@ class GatekeeperController extends Controller
         $parts = explode('|', $request->qr_data);
         $ticketId = $parts[0] ?? null;
 
-        $ticket = Ticket::with('user')->find($ticketId);
+        $ticket = Ticket::with('user')->where('qr_code_hash', $ticketId)->first();
 
         if (!$ticket) {
             return response()->json(['status' => 'error', 'message' => 'Tiket Tidak Valid']);

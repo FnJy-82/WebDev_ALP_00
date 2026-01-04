@@ -25,11 +25,23 @@
                             <x-nav-link :href="route('admin.verifications')" :active="request()->routeIs('admin.verifications')"
                                 class="text-slate-500 hover:text-blue-600 border-transparent hover:border-gray-300">
                                 {{ __('Verifikasi EO') }}
-                                <span class="ml-1 text-xs bg-red-100 text-red-600 px-2 rounded-full">!</span>
+                                @if(Auth::user()->pendingEOs > 0)
+                                    <span class="ml-1 text-xs bg-red-100 text-red-600 px-2 rounded-full">!</span>
+                                @endif
                             </x-nav-link>
 
                             <x-nav-link :href="route('admin.ban-requests.index')" :active="request()->routeIs('admin.ban-requests.*')">
                                 {{ __('Ban Requests') }}
+                            </x-nav-link>
+
+                           <x-nav-link :href="route('admin.events.index')" :active="request()->routeIs('admin.events.*')">
+                                {{ __('Manage Events') }}
+                                {{-- Badge Pending Events --}}
+                                @if(Auth::user()->pendingEvents > 0)
+                                    <span class="ml-1 text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">
+                                        {{ Auth::user()->pendingEvents }}
+                                    </span>
+                                @endif
                             </x-nav-link>
                         @endif
 
@@ -39,13 +51,6 @@
                                 class="text-slate-500 hover:text-blue-600 border-transparent hover:border-gray-300">
                                 {{ __('Event Saya') }}
                             </x-nav-link>
-
-                            {{-- <div class="flex items-center ml-4">
-                                <a href="{{ route('events.create') }}"
-                                    class="px-4 py-2 bg-blue-700 text-white text-sm font-bold rounded-lg hover:bg-blue-800 transition shadow-md">
-                                    + Buat Event
-                                </a>
-                            </div> --}}
 
                             <x-nav-link :href="route('organizer.users.search')" :active="request()->routeIs('organizer.users.search')">
                                 {{ __('Find & Report User') }}
@@ -59,10 +64,10 @@
                                 {{ __('Tiket Saya') }}
                             </x-nav-link>
 
-                            <x-nav-link :href="route('wallet.index')" :active="request()->routeIs('wallet.index')"
+                            {{-- <x-nav-link :href="route('wallet.index')" :active="request()->routeIs('wallet.index')"
                                 class="text-slate-500 hover:text-blue-600 border-transparent hover:border-gray-300">
                                 {{ __('Dompet') }}
-                            </x-nav-link>
+                            </x-nav-link> --}}
                         @endif
                     @endauth
                 </div>
@@ -149,11 +154,14 @@
 
                 @if (Auth::user()->role === 'admin')
                     <x-responsive-nav-link :href="route('admin.verifications')">{{ __('Verifikasi EO') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.ban-requests.index')">{{ __('Ban Requests') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.events.index')">{{ __('Check Events') }}</x-responsive-nav-link>
                 @endif
 
                 @if (Auth::user()->role === 'eo')
                     <x-responsive-nav-link :href="route('events.index')">{{ __('Event Saya') }}</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('events.create')">{{ __('+ Buat Event') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('organizer.users.search')">{{ __('Find & Report User') }}</x-responsive-nav-link>
                 @endif
 
                 @if (Auth::user()->role === 'customer')

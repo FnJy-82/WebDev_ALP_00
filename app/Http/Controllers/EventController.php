@@ -52,7 +52,7 @@ class EventController extends Controller
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'banner_image' => $imagePath,
-            'status' => 'active',
+            'status' => 'pending',
             'price' => 0,
             'quota' => 0,
         ]);
@@ -173,7 +173,9 @@ class EventController extends Controller
         // FIX: Changed 'organizer_id' to 'user_id' to match your database structure
         // defined in your store() method.
         if ($event->user_id !== $user->id && $user->role !== 'admin') {
-            abort(403, 'Unauthorized action. You are not the organizer of this event.');
+            if (!($user->role === 'eo' && $event->user_id === $user->id)) {
+                abort(403, 'Unauthorized action. You are not the organizer of this event.');
+            }
         }
 
         // 3. Fetch Tickets
