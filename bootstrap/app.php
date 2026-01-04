@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         'role' => \App\Http\Middleware\EnsureUserHasRole::class,
         'banned' => \App\Http\Middleware\CheckBanned::class,
     ]);
+    $middleware->validateCsrfTokens(except: [
+        '/midtrans/callback', // <--- Route ini harus ada di sini
+    ]);
 })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

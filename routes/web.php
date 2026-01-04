@@ -31,6 +31,8 @@ Route::get('/events', [EventController::class, 'index'])
     ->middleware('banned') // <--- Added middleware here
     ->name('events.index');
 
+Route::post('/midtrans/callback', [TransactionController::class, 'handleCallback'])
+    ->name('midtrans.callback');
 /*
 |--------------------------------------------------------------------------
 | 2. AUTHENTICATED ROUTES (Wajib Login)
@@ -72,7 +74,10 @@ Route::middleware(['auth', 'verified', 'banned'])->group(function () {
     // --- Gatekeeper ---
     Route::get('/gatekeeper/scan', [GatekeeperController::class, 'index'])->name('gatekeeper.scan');
     Route::post('/gatekeeper/checkin', [GatekeeperController::class, 'store'])->name('gatekeeper.checkin');
-
+    
+    Route::get('/gatekeeper/verify/{hash}', [GatekeeperController::class, 'verifyByHash'])->name('gatekeeper.verify');
+    Route::post('/gatekeeper/checkin/{ticket}', [GatekeeperController::class, 'checkIn'])->name('gatekeeper.checkin');
+    
     // --- Organizer Tools ---
     Route::middleware(EnsureCustomer::class)->group(function () {
         Route::get('/organizer/apply', [OrganizerController::class, 'create'])->name('organizer.create');
