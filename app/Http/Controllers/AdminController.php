@@ -20,7 +20,7 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // 1. Update status Profile
+        // 1. Update status Profile jadi Verified
         $user->organizerProfile()->update(['verification_status' => 'verified']);
 
         // 2. Update Role User jadi EO (agar bisa akses menu create event)

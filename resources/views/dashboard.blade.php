@@ -32,7 +32,7 @@
                         </div>
                         @if($pendingEOs > 0)
                             {{-- Assuming you have a route for admin to approve EOs --}}
-                            <a href="{{ route('admin.organizers.index') }}" class="text-blue-600 text-sm mt-1 hover:underline">Lihat & Verifikasi →</a>
+                            <a href="{{ route('admin.verifications') }}" class="text-blue-600 text-sm mt-1 hover:underline">Lihat & Verifikasi →</a>
                         @else
                             <span class="text-gray-400 text-sm mt-1">Semua aman</span>
                         @endif

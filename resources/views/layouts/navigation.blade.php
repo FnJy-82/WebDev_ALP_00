@@ -40,12 +40,12 @@
                                 {{ __('Event Saya') }}
                             </x-nav-link>
 
-                            <div class="flex items-center ml-4">
+                            {{-- <div class="flex items-center ml-4">
                                 <a href="{{ route('events.create') }}"
                                     class="px-4 py-2 bg-blue-700 text-white text-sm font-bold rounded-lg hover:bg-blue-800 transition shadow-md">
                                     + Buat Event
                                 </a>
-                            </div>
+                            </div> --}}
 
                             <x-nav-link :href="route('organizer.users.search')" :active="request()->routeIs('organizer.users.search')">
                                 {{ __('Find & Report User') }}
