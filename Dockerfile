@@ -1,4 +1,4 @@
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
 WORKDIR /var/www/html
 
@@ -15,6 +15,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs
 
 COPY . .
+
+RUN git config --global --add safe.directory /var/www/html
+
 RUN composer install --no-interaction --optimize-autoloader
 RUN npm install
 RUN npm run build
