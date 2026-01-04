@@ -111,7 +111,7 @@
                                 <input type="text" name="identity_number"
                                     value="{{ old('identity_number', Auth::user()->identity_number) }}" required
                                     minlength="16" maxlength="16"
-                                    class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm py-2 px-3 @error('identity_number') border-red-500 @enderror">
+                                    class="mt-1 block w-full  rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm py-2 px-3 @error('identity_number') border-red-500 @enderror">
                                 @error('identity_number')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
