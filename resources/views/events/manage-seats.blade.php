@@ -3,14 +3,21 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             {{-- Header --}}
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-800">Atur Kursi: {{ $event->title }}</h2>
-                <p class="text-gray-600">Generate layout kursi untuk event ini.</p>
+            <div class="mb-6 flex justify-between items-end">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Atur Kursi: {{ $event->title }}</h2>
+                    <p class="text-gray-600">Generate layout kursi untuk event ini.</p>
+                </div>
+                
+                {{-- TOMBOL SELESAI --}}
+                <a href="{{ route('events.index') }}" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg shadow transition flex items-center gap-2">
+                    <span>&larr;</span> Selesai & Kembali
+                </a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                {{-- LEFT: Generator Form --}}
+                {{-- LEFT: Generator Form (Keep exactly as you had it) --}}
                 <div class="md:col-span-1">
                     <div class="bg-white p-6 rounded-xl shadow-sm border">
                         <h3 class="font-bold text-lg mb-4">Tambah Section Baru</h3>
@@ -51,7 +58,7 @@
                     </div>
                 </div>
 
-                {{-- RIGHT: Preview Layout --}}
+                {{-- RIGHT: Preview Layout (Keep exactly as you had it) --}}
                 <div class="md:col-span-2">
                     <div class="bg-white p-6 rounded-xl shadow-sm border min-h-[400px]">
                         <h3 class="font-bold text-lg mb-4">Preview Layout Saat Ini</h3>
@@ -66,38 +73,27 @@
                                     </div>
 
                                     <div class="overflow-x-auto">
-                                        <div class="inline-flex flex-col gap-2"> {{-- 1. Group tickets by their Row Label (A, B, C...) --}}
+                                        <div class="inline-flex flex-col gap-2"> 
                                             @foreach ($event->tickets->where('category_id', $category->id)->groupBy('row_label') as $rowLabel => $ticketsInRow)
                                                 <div class="flex items-center gap-1">
-                                                    {{-- Row Label (Left side indicator) --}}
                                                     <div class="w-8 text-sm font-bold text-gray-500 text-right mr-2">
                                                         {{ $rowLabel }}
                                                     </div>
 
-                                                    {{-- 2. Display all seats for THIS row in one straight line --}}
                                                     @foreach ($ticketsInRow as $ticket)
                                                         <div class="w-8 h-8 bg-gray-100 border border-gray-200 text-[10px] flex items-center justify-center rounded text-gray-600 hover:bg-cyan-100 hover:border-cyan-300 transition"
                                                             title="{{ $ticket->seat_number }}">
-
-                                                            {{-- Extract just the number to save space (e.g., "1" from "A-1") --}}
-                                                            {{-- Or just use loop iteration if your DB is sorted --}}
                                                             {{ explode('-', $ticket->seat_number)[1] ?? $ticket->seat_number }}
                                                         </div>
                                                     @endforeach
                                                 </div>
                                             @endforeach
-
                                         </div>
                                     </div>
                                 </div>
                             @endforeach
                         @else
                             <div class="flex flex-col items-center justify-center h-64 text-gray-400">
-                                <svg class="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                                    </path>
-                                </svg>
                                 <p>Belum ada layout kursi.</p>
                             </div>
                         @endif
